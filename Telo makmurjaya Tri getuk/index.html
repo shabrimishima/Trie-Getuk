@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trie Getuk - Getuk Tradisional Rasa Kekinian</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f5e6d3, #e8d5b7);
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Background Pattern */
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20px 20px, #d4a574 2px, transparent 2px),
+                radial-gradient(circle at 80px 80px, #d4a574 1px, transparent 1px);
+            background-size: 100px 100px, 40px 40px;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 10px 0;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            color: #8b4513;
+            font-size: 1.2rem;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            align-items: center;
+        }
+        
+        .nav-menu-kanan {
+            display: flex;
+            list-style: none;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a:hover {
+            color: #4CAF50;
+        }
+
+        .btn-order {
+            background: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            font-size: 0.9rem;
+        }
+
+        .btn-order:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-icon, .cart-icon {
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
+            transition: color 0.3s ease;
+            padding: 6px;
+            border-radius: 8px;
+            transition: background 0.3s ease;
+        }
+
+        .menu-icon:hover, .cart-icon:hover {
+            color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 4px;
+        }
+
+        .menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: #333;
+            transition: 0.3s;
+        }
+
+        /* Main Hero Section */
+        .hero-section {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            background-image: url(batik.png);
+            
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .hero-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 165, 116, 0.1) 0%, transparent 50%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hero-text {
+            z-index: 2;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: #f0f8f0;
+            color: #4CAF50;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border: 2px solid #4CAF50;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #8b4513;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: #d2691e;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .hero-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f8f8;
+            color: #333;
+            padding: 15px 30px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: #e8e8e8;
+            border-color: #4CAF50;
+            color: #4CAF50;
+        }
+
+        .hero-image {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+        }
+
+        .product-showcase {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            margin: 0 auto;
+        }
+
+        .product-showcase:hover {
+            transform: scale(1.05);
+        }
+
+        .main-product {
+            width: 100%;
+            border-radius: 20px;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .product-showcase:hover .main-product {
+            transform: scale(1.1);
+        }
+
+        /* Dekorasi lingkaran animasi */
+        .decor-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(76, 175, 80, 0.1);
+            animation: pulse 6s infinite ease-in-out;
+            z-index: -1;
+        }
+
+        .circle1 {
+            width: 150px;
+            height: 150px;
+            top: -30px;
+            left: -30px;
+        }
+
+        .circle2 {
+            width: 100px;
+            height: 100px;
+            bottom: -20px;
+            right: -20px;
+            animation-delay: 2s;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.3;
+            }
+        }
+
+        /* About Section */
+        .about-section {
+            background: #fceee4;
+            padding: 80px 20px;
+            text-align: left;
+        }
+
+        .about-section h2 {
+            font-size: 2rem;
+            color: #8b4513;
+            margin-bottom: 20px;
+        }
+
+        .about-section p {
+            color: #333;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Menu Section */
+        .menu-section {
+            background: #6b4226;
+            padding: 60px 20px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .section-subtitle {
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            color: #f2e6d9;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .menu-card {
+            background: #8b5e3c;
+            border-radius: 20px;
+            padding: 20px;
+            color: #fff;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+        }
+
+        .menu-img {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            display: block;
+        }
+
+        .menu-card h3 {
+            margin: 10px 0 5px;
+            font-size: 1.2rem;
+        }
+
+        .menu-card p {
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            color: #f2e6d9;
+        }
+
+        .menu-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-weight: bold;
+            font-size: 1rem;
+            color: #fff;
+        }
+
+        .btn-buy {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .btn-buy:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        /* Why Choose Section */
+        .why-choose {
+            background: #2e7d32;
+            padding: 80px 20px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .feature {
+            background: #388e3c;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+        }
+
+        .feature .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .feature p {
+            font-size: 0.95rem;
+            color: #f1f1f1;
+        }
+
+        /* Gallery Section */
+        .gallery {
+            background: #f3f0e7;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .gallery-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 40px;
+            color: #4e342e;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            aspect-ratio: 1;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.35);
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: linear-gradient(135deg, #e0c8b0, #d4a574);
+            padding: 80px 20px;
+            color: #3e2723;
+        }
+
+        .contact-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: start;
+        }
+
+        .contact-info h2, .vision-mission h2 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #5d4037;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: translateX(10px);
+        }
+
+        .contact-icon {
+            font-size: 1.5rem;
+            color: #4CAF50;
+            width: 40px;
+            text-align: center;
+        }
+
+        .vision-mission h3 {
+            font-size: 1.3rem;
+            margin: 25px 0 15px;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .vision-mission p {
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #5d4037, #4e2d20);
+            color: #fff;
+            padding: 60px 20px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4CAF50, #45a049, #4CAF50);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+
+        .footer-section p, .footer-section a {
+            color: #ccc;
+            line-height: 1.7;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #4CAF50;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(76, 175, 80, 0.2);
+            border-radius: 50%;
+            color: #4CAF50;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: #4CAF50;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .logo {
+                font-size: 1rem;
+            }
+
+            .logo img {
+                width: 35px;
+                height: 35px;
+            }
+
+            .btn-order {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                padding: 30px 20px;
+                gap: 30px;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.3rem;
+            }
+
+            .hero-description {
+                font-size: 15px;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .btn-primary, .btn-secondary {
+                padding: 12px 24px;
+                font-size: 14px;
+            }
+
+            .product-showcase {
+                max-width: 250px;
+            }
+
+            .circle1 {
+                width: 120px;
+                height: 120px;
+                top: -20px;
+                left: -20px;
+            }
+
+            .circle2 {
+                width: 80px;
+                height: 80px;
+                bottom: -15px;
+                right: -15px;
+            }
+
+            .about-section {
+                padding: 60px 20px;
+            }
+
+            .about-section h2 {
+                font-size: 1.8rem;
+            }
+
+            .about-section p {
+                font-size: 1rem;
+            }
+
+            .menu-section, .why-choose, .gallery {
+                padding: 50px 20px;
+            }
+
+            .section-title, .gallery-title {
+                font-size: 1.8rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 20px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                gap: 20px;
+            }
+
+            .contact-section {
+                padding: 60px 20px;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .contact-info h2, .vision-mission h2 {
+                font-size: 1.8rem;
+            }
+
+            .footer {
+                padding: 40px 20px 15px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container {
+                padding: 0 15px;
+            }
+
+            .hero-section {
+                padding: 30px 15px;
+            }
+
+            .hero-content {
+                padding: 25px 15px;
+                border-radius: 20px;
+            }
+
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .btn-primary, .btn-secondary {
+                padding: 10px 20px;
+                font-size: 13px;
+                width: 100%;
+                text-align: center;
+            }
+
+            .product-showcase {
+                max-width: 200px;
+                padding: 15px;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .menu-card {
+                padding: 15px;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .contact-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-text > * {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .hero-text > *:nth-child(1) { animation-delay: 0.1s; }
+        .hero-text > *:nth-child(2) { animation-delay: 0.2s; }
+        .hero-text > *:nth-child(3) { animation-delay: 0.3s; }
+        .hero-text > *:nth-child(4) { animation-delay: 0.4s; }
+        .hero-text > *:nth-child(5) { animation-delay: 0.5s; }
+
+        .hero-image {
+            animation: fadeInUp 0.6s ease forwards;
+            animation-delay: 0.3s;
+        }
+
+       .testimonial-carousel {
+    position: relative;
+    max-width: 900px;  /* biar ada ruang kanan kiri */
+    margin: 0 auto;
+    height: 450px;
+}
+/* Foto profil lingkaran */
+.profile-pic {
+    position: absolute;
+    top: -50px;             /* agak lebih naik biar nongol di atas card */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;           /* lebih besar biar jelas */
+    height: 100px;
+    border-radius: 50%;     /* ini bikin lingkaran */
+    overflow: hidden;       /* buang bagian gambar yang keluar lingkaran */
+    border: 5px solid #fff; /* frame putih */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    background: #eee;       /* background cadangan kalau img gagal load */
+    z-index: 5;
+}
+
+.profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* biar gambar isi penuh lingkaran */
+    display: block;
+}
+
+.testimonial {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 280px;
+    min-height: 250px;
+    background: #fff;
+    border-radius: 20px;
+    padding: 60px 20px 30px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
+    transition: all 0.6s ease;
+    text-align: center;
+}
+.section-title1{
+    text-align: center;
+    margin-top: 50px;
+}
+/* Tengah */
+.testimonial.active {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    z-index: 3;
+}
+
+/* Kiri */
+.testimonial.left {
+    transform: translate(-150%, -50%) scale(0.7);
+    opacity: 0.6;
+    z-index: 1;
+}
+
+/* Kanan */
+.testimonial.right {
+    transform: translate(50%, -50%) scale(0.7);
+    opacity: 0.6;
+    z-index: 1;
+}
+
+/* Cegah scroll horizontal */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Fix khusus untuk mobile */
+@media (max-width: 768px) {
+  .menu-grid {
+    grid-template-columns: 1fr !important; /* 1 kolom di HP */
+    gap: 15px !important;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr) !important; /* 2 kolom pas di HP */
+    gap: 15px !important;
+  }
+
+  .contact-container {
+    grid-template-columns: 1fr !important; /* jadi 1 kolom */
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-menu {
+      flex-direction: column;
+      position: absolute;
+      top: 60px; /* tinggi header */
+      left: 0;
+      right: 0;
+      background: white;
+      padding: 15px 0;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+      display: none;       /* default sembunyi */
+      z-index: 99;
+  }
+
+  .nav-menu a {
+      padding: 12px 20px;
+      display: block;
+      text-align: left;
+  }
+
+  /* biar animasi muncul */
+  .nav-menu.show {
+      display: flex;
+      animation: fadeDown 0.3s ease;
+  }
+
+  @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="Logo Trie Getuk.png">
+                <span>Trie Getuk</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#menu">Menu</a>
+                <a href="#contact">Contact us</a>
+            </nav>
+            
+            <nav class="nav-menu-kanan">
+
+                <div class="header-icons">
+                    <span class="cart-icon">🛒</span>
+                </div>
+                <div class="menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="hero-badge">Trie Getuk</div>
+                <h1 class="hero-title">Getuk Tradisional</h1>
+                <h2 class="hero-subtitle">Rasa Kekinian.</h2>
+                <p class="hero-description">
+                    Trie Getuk hadir dengan berbagai varian rasa — 
+                    Goreng, Cokelat, Gulmur, dan Biasa. Dibuat dari 
+                    bahan pilihan, fresh setiap hari.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#shop" class="btn-primary">Pesan Sekarang</a>
+                    <a href="#about" class="btn-secondary">Pelajari Lebih Lanjut</a>
+                </div>
+            </div>
+            
+            <div class="hero-image">
+                <div class="product-showcase">
+                    <img src="foto product trie 1.png" class="main-product" alt="Trie Getuk">
+                    <!-- Dekorasi lingkaran -->
+                    <div class="decor-circle circle1"></div>
+                    <div class="decor-circle circle2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Menu Section -->
+    <section id="menu" class="menu-section">
+        <div class="container">
+            <h2 class="section-title">Menu Trie Getuk</h2>
+            <p class="section-subtitle">Setiap menu disajikan di nampan tradisional — hangat, legit, dan penuh nostalgia.</p>
+            
+            <div class="menu-grid">
+                <!-- Card 1 -->
+                <div class="menu-card">
+                    <img src="foto product trie 1.png" alt="Getuk Original" class="menu-img">
+                    <h3>Getuk Original</h3>
+                    <p>Getuk dengan rasa asli yang autentik</p>
+                    <div class="menu-footer">
+                        <span class="price">Rp 25.000,-</span>
+                        <button class="btn-buy">Beli</button>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="menu-card">
+                    <img src="getuk coklat.jpg" alt="Getuk Original" class="menu-img">
+                    <h3>Getuk Isi Coklat</h3>
+                    <p>Getuk dengan isian coklat yang manis</p>
+                    <div class="menu-footer">
+                        <span class="price">Rp 25.000,-</span>
+                        <button class="btn-buy">Beli</button>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="menu-card">
+                    <img src="getuk gula jawa.webp" alt="Getuk Original" class="menu-img">
+                    <h3>Getuk Isi Gula Jawa</h3>
+                    <p>Getuk dengan isian gula jawa yang legit</p>
+                    <div class="menu-footer">
+                        <span class="price">Rp 25.000,-</span>
+                        <button class="btn-buy">Beli</button>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="menu-card">
+                    <img src="combro ori.jpg" alt="Getuk Original" class="menu-img">
+                    <h3>Combro</h3>
+                    <p>Singkong rebus dengan isian oncom</p>
+                    <div class="menu-footer">
+                        <span class="price">Rp 25.000,-</span>
+                        <button class="btn-buy">Beli</button>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="menu-card">
+                    <img src="timus.jpg" alt="Getuk Original" class="menu-img">
+                    <h3>Timus</h3>
+                    <p>Singkong kukus dengan kelapa parut</p>
+                    <div class="menu-footer">
+                        <span class="price">Rp 25.000,-</span>
+                        <button class="btn-buy">Beli</button>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="menu-card">
+                    <img src="tela tela.jpg" alt="Getuk Original" class="menu-img">
+                    <h3>Tela-tela</h3>
+                    <p>Singkong goreng dengan bumbu khas</p>
+                    <div class="menu-footer">
+                        <span class="price">Rp 25.000,-</span>
+                        <button class="btn-buy">Beli</button>
+                    </div>
+                </div>
+
+                                <!-- Card 7 -->
+                <div class="menu-card">
+                    <img src="ayam geprek.jpg" alt="Getuk Original" class="menu-img">
+                    <h3>Ayam Geprek</h3>
+                    <p>Ayam di goreng hingga matang dan di tambahkan sambal yang khas</p>
+                    <div class="menu-footer">
+                        <span class="price">Rp 25.000,-</span>
+                        <button class="btn-buy">Beli</button>
+                    </div>
+                </div>
+
+                                <!-- Card 8 -->
+                <div class="menu-card">
+                    <img src="kripik singkong.jpg" alt="Getuk Original" class="menu-img">
+                    <h3>Kripik singkong</h3>
+                    <p>Kripik Singkong goreng yang rasanya lezat</p>
+                    <div class="menu-footer">
+                        <span class="price">Rp 25.000,-</span>
+                        <button class="btn-buy">Beli</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div style="max-width:900px; margin:0 auto;">
+            <h2>Tentang Trie Getuk</h2>
+            <p>
+                Trie Getuk adalah usaha kuliner tradisional yang menghadirkan getuk dan olahan singkong lainnya 
+                dengan cita rasa autentik namun dikemas modern. Kami berkomitmen menjaga resep warisan sambil tetap berinovasi.
+            </p>
+        </div>
+    </section>
+    <!-- Why Choose Section -->
+    <section class="why-choose">
+        <div class="container">
+            <h2 class="section-title">Kenapa Memilih Trie Getuk</h2>
+            <div class="features">
+                <div class="feature">
+                    <div class="icon">🌿</div>
+                    <h3>Alami</h3>
+                    <p>Dibuat dengan bahan alami pilihan</p>
+                </div>
+                <div class="feature">
+                    <div class="icon">👨‍🍳</div>
+                    <h3>Resep Tradisional</h3>
+                    <p>Rasa autentik khas nusantara dengan sentuhan modern</p>
+                </div>
+                <div class="feature">
+                    <div class="icon">🚚</div>
+                    <h3>Pengiriman Cepat</h3>
+                    <p>Pesanan selalu datang fresh ke rumah Anda dengan cepat</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery">
+        <div class="container">
+            <h2 class="gallery-title">Galeri Trie Getuk</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="Galeri trie1.png" alt="Getuk 1">
+                </div>
+                <div class="gallery-item">
+                    <img src="Galeri trie1.png" alt="Getuk 2">
+                </div>
+                <div class="gallery-item">
+                    <img src="Galeri trie1.png" alt="Getuk 3">
+                </div>
+                <div class="gallery-item">
+                    <img src="Galeri trie1.png" alt="Getuk 4">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial Section -->
+<section class="testimonial-section">
+  <h2 class="section-title1">Apa Kata Mereka</h2>
+  <div class="testimonial-carousel">
+    <div class="testimonial active">
+      <div class="profile-pic">
+        <img src="profile.png" alt="User 1">
+      </div>
+      <p>“Getuknya enak banget, legit dan manis pas. Anak-anak juga suka.”</p>
+      <div class="stars">★★★★★</div>
+      <h4>- 1 Siti, Sleman</h4>
+    </div>
+
+    <div class="testimonial">
+      <div class="profile-pic">
+        <img src="profile.png" alt="User 2">
+      </div>
+      <p>“Beli untuk oleh-oleh, semua keluarga puas! Packaging juga rapi.”</p>
+      <div class="stars">★★★★☆</div>
+      <h4>- 2 Budi, Yogyakarta</h4>
+    </div>
+
+    <div class="testimonial">
+      <div class="profile-pic">
+        <img src="profile.png" alt="User 3">
+      </div>
+      <p>“Rasa tradisional tapi tampil modern. Recommended banget.”</p>
+      <div class="stars">★★★★★</div>
+      <h4>- 3 Rina, Bantul</h4>
+    </div>
+
+    
+    <div class="testimonial">
+      <div class="profile-pic">
+        <img src="profile.png" alt="User 3">
+      </div>
+      <p>“Rasa tradisional tapi tampil modern. Recommended banget.”</p>
+      <div class="stars">★★★★★</div>
+      <h4>- 4Rina, Bantul</h4>
+    </div>
+
+    
+    <div class="testimonial">
+      <div class="profile-pic">
+        <img src="profile.png" alt="User 3">
+      </div>
+      <p>“Rasa tradisionnded banget.”</p>
+      <div class="stars">★★★★★</div>
+      <h4>- 5Rina, Bantul</h4>
+    </div>
+  </div>
+</section>
+
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="contact-container">
+            <!-- Kontak Info -->
+            <div class="contact-info">
+                <h2>Trie Getuk</h2>
+                <div class="contact-item">
+                    <div class="contact-icon">📍</div>
+                    <div>
+                        <h3>Alamat Utama</h3>
+                        <p>Jl. Patuk RT 08 RW 15, Banyuraden, Gamping, Sleman, Daerah Istimewa Yogyakarta 55293</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">📞</div>
+                    <div>
+                        <h3>Telepon</h3>
+                        <p>0895-3653-29405</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">✉️</div>
+                    <div>
+                        <h3>Email</h3>
+                        <p>Pipitvitrria@gmail.com</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">📷</div>
+                    <div>
+                        <h3>Instagram</h3>
+                        <p>@safitri</p>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">🕐</div>
+                    <div>
+                        <h3>Jam Operasional</h3>
+                        <p>Senin - Sabtu: 08.00 - 20.00 WIB<br>Minggu: 09.00 - 18.00 WIB</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visi Misi -->
+            <div class="vision-mission">
+                <h2>Visi & Misi Kami</h2>
+                
+                <h3>🎯 Visi</h3>
+                <p>Menjadi produsen getuk dan olahan singkong terdepan yang menghadirkan cita rasa tradisional berkualitas tinggi dengan inovasi modern, serta melestarikan warisan kuliner Nusantara untuk generasi mendatang.</p>
+                
+                <h3>🚀 Misi</h3>
+                <p>• Mengembangkan produk olahan singkong berkualitas premium dengan teknologi modern</p>
+                <p>• Mempertahankan cita rasa autentik sambil terus berinovasi</p>
+                <p>• Memberikan pelayanan terbaik dan kepuasan pelanggan</p>
+                <p>• Mendukung petani lokal dengan kemitraan yang saling menguntungkan</p>
+                <p>• Melestarikan budaya kuliner tradisional Indonesia</p>
+                
+                <h3>🏆 Sertifikat & Penghargaan</h3>
+                <p>✓ Sertifikat Halal MUI<br>✓ BPOM RI<br>✓ Best Traditional Food 2023<br>✓ Customer Choice Award 2024</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>🏪 Trie Getuk</h3>
+                <p>Getuk tradisional rasa kekinian yang dibuat dengan cinta dan dedikasi tinggi. Nikmati kelezatan warisan nenek moyang dengan kualitas modern.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">📷</a>
+                    <a href="#" class="social-link">📘</a>
+                    <a href="#" class="social-link">🐦</a>
+                    <a href="#" class="social-link">🎵</a>
+                    <a href="https://wa.me/6289536532940" class="social-link">💬</a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h3>🍽️ Produk Kami</h3>
+                <p><a href="#menu">Getuk Original</a></p>
+                <p><a href="#menu">Getuk Cokelat</a></p>
+                <p><a href="#menu">Getuk Goreng</a></p>
+                <p><a href="#menu">Getuk Gula Merah</a></p>
+                <p><a href="#menu">Paket Family</a></p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>ℹ️ Layanan</h3>
+                <p><a href="#about">Tentang Kami</a></p>
+                <p><a href="#contact">Kontak</a></p>
+                <p><a href="#gallery">Galeri</a></p>
+                <p><a href="#">Cara Pemesanan</a></p>
+                <p><a href="#">Kebijakan Privasi</a></p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>🚀 Pengiriman</h3>
+                <p>🚚 Same Day Delivery (Yogyakarta)</p>
+                <p>📦 Pengiriman Seluruh Indonesia</p>
+                <p>❄️ Kemasan Khusus Tahan Lama</p>
+                <p>💯 Garansi Kepuasan 100%</p>
+                <p>🎁 Free Packaging untuk Gift</p>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>Trie Getuk © 2025 All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+// Mobile menu toggle
+const menuToggle = document.querySelector('.menu-toggle');
+const navMenu = document.querySelector('.nav-menu');
+
+if (menuToggle) {
+    menuToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('show');
+    });
+}
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = '0 4px 30px rgba(0,0,0,0.15)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.boxShadow = '0 2px 20px rgba(0,0,0,0.1)';
+            }
+        });
+
+        // Buy button functionality
+        document.querySelectorAll('.btn-buy').forEach(button => {
+            button.addEventListener('click', function() {
+                const menuCard = this.closest('.menu-card');
+                const menuName = menuCard.querySelector('h3').textContent;
+                const price = menuCard.querySelector('.price').textContent;
+                
+                // WhatsApp message
+                const message = `Halo, saya tertarik untuk memesan ${menuName} dengan harga ${price}. Mohon informasi lebih lanjut.`;
+                const whatsappURL = `https://wa.me/6289536532940?text=${encodeURIComponent(message)}`;
+                window.open(whatsappURL, '_blank');
+            });
+        });
+
+        // Order button functionality
+        document.querySelectorAll('.btn-order, .btn-primary').forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (this.getAttribute('href') === '#shop' || this.textContent.includes('Pesan')) {
+                    e.preventDefault();
+                    const message = `Halo, saya ingin memesan produk Trie Getuk. Mohon informasi menu dan cara pemesanannya.`;
+                    const whatsappURL = `https://wa.me/62895365329405?text=${encodeURIComponent(message)}`;
+                    window.open(whatsappURL, '_blank');
+                }
+            });
+        });
+
+  const testimonials = document.querySelectorAll('.testimonial');
+  let currentIndex = 0;
+
+  function updateCarousel() {
+    testimonials.forEach((t, i) => {
+      t.classList.remove('active', 'left', 'right');
+
+      if (i === currentIndex) {
+        t.classList.add('active'); // tengah
+      } 
+      else if (i === (currentIndex - 1 + testimonials.length) % testimonials.length) {
+        t.classList.add('left'); // kiri
+      } 
+      else if (i === (currentIndex + 1) % testimonials.length) {
+        t.classList.add('right'); // kanan
+      }
+    });
+  }
+
+  function nextTestimonial() {
+    currentIndex = (currentIndex + 1) % testimonials.length;
+    updateCarousel();
+  }
+
+  // tampil awal
+  updateCarousel();
+
+  // auto ganti tiap 5 detik
+  setInterval(nextTestimonial, 5000);
+    </script>
+</body>
+</html>
